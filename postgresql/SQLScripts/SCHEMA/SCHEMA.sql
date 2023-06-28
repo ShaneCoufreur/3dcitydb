@@ -241,9 +241,20 @@ CREATE INDEX appearance_identifier_inx ON appearance  ( identifier, identifier_c
 
 CREATE INDEX appearance_implicit_geom_fkx ON appearance  ( implicit_geometry_id );
 
+CREATE  TABLE feature_relation (
+  from_feature_id           bigint    ,
+  to_feature_id           bigint,
+  reference_type   integer
+);
+CREATE INDEX feature_relation_fkx1 ON feature_relation  ( from_feature_id );
+CREATE INDEX feature_relation_fkx2 ON feature_relation  ( to_feature_id );
+CREATE INDEX feature_relation_reference_inx ON feature_relation  ( reference_type );
+
+ALTER TABLE feature_relation ADD CONSTRAINT feature_relation_fk1 FOREIGN KEY ( from_feature_id ) REFERENCES feature( id ) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE feature_relation ADD CONSTRAINT feature_relation_fk2 FOREIGN KEY ( to_feature_id ) REFERENCES feature( id )  ON DELETE CASCADE ON UPDATE CASCADE;
+
 CREATE  TABLE property (
   id                   bigint DEFAULT nextval('property_seq'::regclass) NOT NULL  ,
-  feature_id           bigint    ,
   parent_id            bigint    ,
   root_id              bigint    ,
   lod                  text    ,
@@ -263,20 +274,14 @@ CREATE  TABLE property (
   val_implicitgeom_refpoint geometry(GEOMETRYZ)    ,
   val_implicitgeom_transform text    ,
   val_appearance_id    bigint    ,
-  val_feature_id       bigint    ,
-  val_reference_type   integer    ,
   val_content          text    ,
   val_content_mime_type text    ,
   CONSTRAINT property_pk PRIMARY KEY ( id )
 );
 
-CREATE INDEX property_feature_fkx ON property  ( feature_id );
-
 CREATE INDEX property_parent_fkx ON property  ( parent_id );
 
 CREATE INDEX property_root_fkx ON property  ( root_id );
-
-CREATE INDEX property_val_feature_fkx ON property  ( val_feature_id );
 
 CREATE INDEX property_namespace_name_inx ON property  ( namespace_id, name );
 
@@ -304,7 +309,6 @@ CREATE INDEX property_val_implicitgeom_spx ON property USING GiST ( val_implicit
 
 CREATE INDEX property_namespace_fkx ON property  ( namespace_id );
 
-CREATE INDEX property_val_reference_inx ON property  ( val_reference_type );
 
 CREATE  TABLE appear_to_surface_data (
   id                   bigint DEFAULT nextval('appear_to_surface_data_seq'::regclass) NOT NULL  ,
@@ -355,10 +359,6 @@ ALTER TABLE objectclass ADD CONSTRAINT objectclass_superclass_fk FOREIGN KEY ( s
 ALTER TABLE objectclass ADD CONSTRAINT objectclass_namespace_fk FOREIGN KEY ( namespace_id ) REFERENCES namespace( id );
 
 ALTER TABLE property ADD CONSTRAINT property_appearance_fk FOREIGN KEY ( val_appearance_id ) REFERENCES appearance( id )  ON UPDATE CASCADE;
-
-ALTER TABLE property ADD CONSTRAINT property_feature_fk FOREIGN KEY ( feature_id ) REFERENCES feature( id )  ON UPDATE CASCADE;
-
-ALTER TABLE property ADD CONSTRAINT property_val_feature_fk FOREIGN KEY ( val_feature_id ) REFERENCES feature( id )  ON UPDATE CASCADE;
 
 ALTER TABLE property ADD CONSTRAINT property_val_implicitgeom_fk FOREIGN KEY ( val_implicitgeom_id ) REFERENCES implicit_geometry( id )  ON UPDATE CASCADE;
 
