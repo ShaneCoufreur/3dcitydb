@@ -22,6 +22,8 @@ CREATE SEQUENCE surface_data_seq START WITH 1 INCREMENT BY 1 MINVALUE 0 MAXVALUE
 
 CREATE SEQUENCE tex_image_seq START WITH 1 INCREMENT BY 1 MINVALUE 0 MAXVALUE 9223372036854775807 CACHE 1 NO CYCLE;
 
+CREATE SEQUENCE time_value_pair_seq START WITH 1 INCREMENT BY 1 MINVALUE 0 MAXVALUE 9223372036854775807 CACHE 1 NO CYCLE;
+
 CREATE  TABLE address (
 	id                   bigint DEFAULT nextval('address_seq'::regclass) NOT NULL  ,
 	objectid             text    ,
@@ -304,6 +306,37 @@ CREATE INDEX surface_data_mapping_fkx1 ON surface_data_mapping  ( geometry_data_
 
 CREATE INDEX surface_data_mapping_fkx2 ON surface_data_mapping  ( surface_data_id );
 
+CREATE  TABLE time_value_pair (
+	id                   bigint DEFAULT nextval('time_value_pair_seq'::regclass) NOT NULL  ,
+	"timestamp"          timestamptz    ,
+	val_int              bigint    ,
+	val_double           double precision    ,
+	val_string           text    ,
+	val_uri              text    ,
+	val_geometry_id      bigint    ,
+	val_implicitgeom_id  bigint    ,
+	val_implicitgeom_refpoint geometry(GEOMETRYZ)    ,
+	val_implicitgeom_transform json    ,
+	val_appearance_id    bigint    ,
+	CONSTRAINT time_value_pair_pk PRIMARY KEY ( id )
+ );
+
+CREATE INDEX kvp_timestamp_inx ON time_value_pair  ( "timestamp" );
+
+CREATE INDEX kvp_val_int_inx ON time_value_pair  ( val_int );
+
+CREATE INDEX kvp_val_string_inx ON time_value_pair  ( val_string );
+
+CREATE INDEX kvp_val_double_inx ON time_value_pair  ( val_double );
+
+CREATE INDEX kvp_val_uri_inx ON time_value_pair  ( val_uri );
+
+CREATE INDEX kvp_val_geometry_fkx ON time_value_pair  ( val_geometry_id );
+
+CREATE INDEX kvp_val_implicitgeom_fkx ON time_value_pair  ( val_implicitgeom_id );
+
+CREATE INDEX kvp_val_appearance_fkx ON time_value_pair  ( val_appearance_id );
+
 CREATE  TABLE appear_to_surface_data (
 	id                   bigint DEFAULT nextval('appear_to_surface_data_seq'::regclass) NOT NULL  ,
 	appearance_id        bigint  NOT NULL  ,
@@ -364,3 +397,9 @@ ALTER TABLE surface_data ADD CONSTRAINT surface_data_tex_image_fk FOREIGN KEY ( 
 ALTER TABLE surface_data_mapping ADD CONSTRAINT surface_data_mapping_fk1 FOREIGN KEY ( geometry_data_id ) REFERENCES geometry_data( id ) ON DELETE CASCADE;
 
 ALTER TABLE surface_data_mapping ADD CONSTRAINT surface_data_mapping_fk2 FOREIGN KEY ( surface_data_id ) REFERENCES surface_data( id ) ON DELETE CASCADE;
+
+ALTER TABLE time_value_pair ADD CONSTRAINT kvp_val_appearance_fk FOREIGN KEY ( val_appearance_id ) REFERENCES appearance( id ) ON DELETE CASCADE;
+
+ALTER TABLE time_value_pair ADD CONSTRAINT kvp_val_implicitgeom_fk FOREIGN KEY ( val_geometry_id ) REFERENCES geometry_data( id ) ON DELETE CASCADE;
+
+ALTER TABLE time_value_pair ADD CONSTRAINT kvp_val_geometry_fk FOREIGN KEY ( val_implicitgeom_id ) REFERENCES implicit_geometry( id ) ON DELETE CASCADE;
