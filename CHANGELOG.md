@@ -3,8 +3,10 @@
 ## [Unreleased]
 
 ### Fixed
-- Fixed a regression where delete scripts did not return the `ID` when deleting nested features.
+- Resolved a regression where delete scripts did not return the `id` when deleting nested features.
 - Fixed the changelog trigger on `feature` to prevent recursive execution.
+- Updated the `id` column of the `feature_changelog` table to automatically generate values using
+  `feature_changelog_seq`.
 - Added a `NOT NULL` constraint on the `transaction_date` column of the `feature_changelog` table.
 
 ## [5.1.0] - 2025-08-24
