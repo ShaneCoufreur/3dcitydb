@@ -192,13 +192,30 @@ LANGUAGE plpgsql STABLE STRICT;
 ******************************************************************/
 CREATE OR REPLACE FUNCTION citydb_pkg.schema_exists(schema_name TEXT) RETURNS INTEGER AS
 $body$
-SELECT COALESCE((
+SELECT CASE WHEN EXISTS (
   SELECT 1
-  FROM information_schema.schemata s
-  JOIN information_schema.tables t ON t.table_schema = s.schema_name
-  WHERE s.schema_name = $1
-    AND t.table_name = 'database_srs'
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE n.nspname = $1
+    AND c.relname = 'database_srs'
+    AND c.relkind = 'r'
   LIMIT 1
-), 0)
+) THEN 1 ELSE 0 END;
 $body$
 LANGUAGE sql STABLE;
+
+/******************************************************************
+* polyhedral_to_collection
+*
+* @param geom The geometry to process
+* @return Geometry collection of polygons if input is a polyhedral surfaces,
+*    otherwise the original geometry
+******************************************************************/
+CREATE OR REPLACE FUNCTION citydb_pkg.polyhedral_to_collection(geom GEOMETRY) RETURNS GEOMETRY AS
+$body$
+SELECT CASE
+  WHEN ST_GeometryType($1) = 'ST_PolyhedralSurface' THEN ST_ForceCollection($1)
+  ELSE $1
+END
+$body$
+LANGUAGE sql IMMUTABLE STRICT PARALLEL SAFE;
