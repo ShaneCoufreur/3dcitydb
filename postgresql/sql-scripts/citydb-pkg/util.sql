@@ -26,8 +26,8 @@ LANGUAGE sql IMMUTABLE;
 * db_metadata
 *
 * @return TABLE with columns
-*    srid, srs_name,
-*    coord_ref_sys_name, coord_ref_sys_kind, wktext
+*   srid, srs_name,
+*   coord_ref_sys_name, coord_ref_sys_kind, wktext
 ******************************************************************/
 CREATE OR REPLACE FUNCTION citydb_pkg.db_metadata()
   RETURNS TABLE(
@@ -55,8 +55,8 @@ LANGUAGE plpgsql STABLE;
 *
 * @param schema_name Name of database schema
 * @return TABLE with columns
-*    srid, srs_name,
-*    coord_ref_sys_name, coord_ref_sys_kind, wktext
+*   srid, srs_name,
+*   coord_ref_sys_name, coord_ref_sys_kind, wktext
 ******************************************************************/
 CREATE OR REPLACE FUNCTION citydb_pkg.db_metadata(schema_name TEXT)
   RETURNS TABLE(
@@ -205,17 +205,17 @@ $body$
 LANGUAGE sql STABLE;
 
 /******************************************************************
-* polyhedral_to_collection
+* normalize_polyhedral
 *
 * @param geom The geometry to process
-* @return Geometry collection of polygons if input is a polyhedral surfaces,
-*    otherwise the original geometry
+* @return A geometry collection of polygons if input is a polyhedral surfaces,
+*   otherwise the original geometry
 ******************************************************************/
-CREATE OR REPLACE FUNCTION citydb_pkg.polyhedral_to_collection(geom GEOMETRY) RETURNS GEOMETRY AS
+CREATE OR REPLACE FUNCTION citydb_pkg.normalize_polyhedral(geom GEOMETRY) RETURNS GEOMETRY AS
 $body$
 SELECT CASE
   WHEN ST_GeometryType($1) = 'ST_PolyhedralSurface' THEN ST_ForceCollection($1)
   ELSE $1
-END
+END;
 $body$
 LANGUAGE sql IMMUTABLE STRICT PARALLEL SAFE;

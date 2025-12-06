@@ -149,7 +149,7 @@ LANGUAGE plpgsql;
 *
 * @param srid The SRID to retrieve the CRS information for
 * @return TABLE with columns
-*    coord_ref_sys_name, coord_ref_sys_kind, wktext
+*   coord_ref_sys_name, coord_ref_sys_kind, wktext
 ******************************************************************/
 CREATE OR REPLACE FUNCTION citydb_pkg.get_coord_ref_sys_info(srid INTEGER)
   RETURNS TABLE(
