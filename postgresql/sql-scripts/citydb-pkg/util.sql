@@ -124,7 +124,7 @@ LANGUAGE sql STRICT;
 /*****************************************************************
 * get_seq_values
 *
-* @param seq_name Name of the sequence possibly including a schema prefix
+* @param seq_name Name of the sequence
 * @param count Number of values to be queried from the sequence
 * @param schema_name Name of database schema
 * @return List of sequence values from given sequence
@@ -134,12 +134,9 @@ CREATE OR REPLACE FUNCTION citydb_pkg.get_seq_values(
   seq_count BIGINT,
   schema_name TEXT) RETURNS SETOF BIGINT AS
 $body$
-BEGIN
-  PERFORM citydb_pkg.set_current_schema(schema_name);
-  RETURN QUERY SELECT * FROM citydb_pkg.get_seq_values(seq_name, seq_count);
-END;
+SELECT nextval(format('%I.%I', $3, $1)::regclass)::bigint FROM generate_series(1, $2);
 $body$
-LANGUAGE plpgsql STABLE;
+LANGUAGE sql STRICT;
 
 /*****************************************************************
 * get_current_schema
@@ -182,7 +179,7 @@ BEGIN
   PERFORM set_config('search_path', format('%I, citydb_pkg, public', schema_name), local);
 END;
 $body$
-LANGUAGE plpgsql STABLE STRICT;
+LANGUAGE plpgsql STRICT;
 
 /*****************************************************************
 * schema_exists
