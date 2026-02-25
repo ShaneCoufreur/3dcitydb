@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [5.1.2] - 2026-02-25
+
+### Added
+- Added a new read-update (RU) access mode to the `grant-access` script, providing a middle ground between
+  read-only (RO) and full read-write (RW) access. With the RU mode, users can add and terminate features but are
+  not allowed to delete them. This is particularly useful for maintaining a feature history without physically
+  removing features from the database. [#264](https://github.com/3dcitydb/3dcitydb/issues/264)
+
 ## [5.1.1] - 2025-12-06
 
 ### Fixed
@@ -54,7 +62,8 @@ the [user manual](https://3dcitydb.github.io/3dcitydb-mkdocs/) for complete docu
 The changelog of previous 3D City Database releases before version 5.0 is available
 [here](https://github.com/3dcitydb/3dcitydb/tree/3dcitydb-v4/CHANGES.md).
 
-[Unreleased]: https://github.com/3dcitydb/3dcitydb/compare/v5.1.1..HEAD
+[Unreleased]: https://github.com/3dcitydb/3dcitydb/compare/v5.1.2..HEAD
+[5.1.2]: https://github.com/3dcitydb/3dcitydb/releases/tag/v5.1.2
 [5.1.1]: https://github.com/3dcitydb/3dcitydb/releases/tag/v5.1.1
 [5.1.0]: https://github.com/3dcitydb/3dcitydb/releases/tag/v5.1.0
 [5.0.0]: https://github.com/3dcitydb/3dcitydb/releases/tag/v5.0.0
