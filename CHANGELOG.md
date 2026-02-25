@@ -5,10 +5,9 @@
 ## [5.1.2] - 2026-02-25
 
 ### Added
-- Added a new read-update (RU) access mode to the `grant-access` script, providing a middle ground between
-  read-only (RO) and full read-write (RW) access. With the RU mode, users can add and terminate features but are
-  not allowed to delete them. This is particularly useful for maintaining a feature history without physically
-  removing features from the database. [#264](https://github.com/3dcitydb/3dcitydb/issues/264)
+- Added a read-update (RU) mode to the `grant-access` script, bridging read-only (RO) and read-write (RW). RU allows
+  adding and terminating features but not deleting them, supporting feature history without physically removing
+  features from the database. [#264](https://github.com/3dcitydb/3dcitydb/issues/264)
 
 ## [5.1.1] - 2025-12-06
 
