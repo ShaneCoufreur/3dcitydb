@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fixed failing `citydb_pkg.delete_address` functions caused by calls to non-existing functions. [#272](https://github.com/3dcitydb/3dcitydb/pull/272)
+
 ## [5.1.2] - 2026-02-25
 
 ### Added
